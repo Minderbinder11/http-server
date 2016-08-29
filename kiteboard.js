@@ -9,10 +9,22 @@ exports.getList = function (req, resp){
 
     insert.executeSql('SELECT * FROM brands', function(data, err){
           if (err) {
-               httpMessages.showGetList(req, resp);
+               httpMessages.showError(req, resp);
             }
             else {
               httpMessages.sendJson(req, resp, data);
             }
         });
+};
+
+exports.get = function (req, resp, name) {
+
+  insert.executeSql('select * from brands where brand = ' + name + ';', function(data, err){
+        if (err) {
+             httpMessages.showError(req, resp);
+          }
+          else {
+            httpMessages.sendJson(req, resp, data);
+          }
+      });
 };
