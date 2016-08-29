@@ -10,6 +10,7 @@ exports.executeSql = function(sql, callback){
     connection.query(sql, function(err, data) {
       if (err) {
         console.error('error connecting: ' + err.stack);
+        callback(null, err);
         return;
       } else{
         console.log('connected as id ' + connection.threadId);

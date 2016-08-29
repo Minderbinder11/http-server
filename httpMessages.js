@@ -20,7 +20,6 @@ exports.sendJson = function (req, resp, data) {
     resp.writeHead(200, { "Content-Type": "application/json" });
 
     if(data) {
-  //    console.log(data);
      resp.write(JSON.stringify(data));
     }
 
