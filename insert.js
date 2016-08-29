@@ -6,11 +6,21 @@ var settings = require('./settings');
 
 exports.executeSql = function(sql, callback){
     var connection = mysql.createConnection(settings.dbConfig);
-    connection.connect();
 
-    var result = connection.query(sql)
-      connection.end();
-      callback(result);
+    connection.query(sql, function(err, data) {
+      if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+      } else{
+        console.log('connected as id ' + connection.threadId);
+        console.log(data);
+        callback(data);
+      }
+    });
+
+    //var result = connection.query(sql)
+    //  connection.end();
+    //  callback(result);
 };
 
 /*
