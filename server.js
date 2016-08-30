@@ -22,7 +22,17 @@ http.createServer(function(req, resp){
                 httpMessages.showError(req, resp, error);
               }
             });
-            request.get(urlYelp)
+
+            request.get(urlYelp, function (err, res, body){
+                if (err){
+                  httpMessages.showError(req, resp, error);
+                }else{
+                  kiteboard.showYelp(req, response, body);
+                  console.log(body);
+                }
+              });
+
+            });
             .on('error', function(err){console.error(err);})
             .on('data', function(data){
                 reqBody += data;
