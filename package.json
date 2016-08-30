@@ -5,7 +5,8 @@
   "main": "select.js",
   "dependencies": {
     "json-stringify": "^1.0.0",
-    "mysql": "^2.11.1"
+    "mysql": "^2.11.1",
+    "url-parse": "^1.1.3"
   },
   "devDependencies": {},
   "scripts": {

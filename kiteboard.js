@@ -19,7 +19,10 @@ exports.getList = function (req, resp){
 
 exports.get = function (req, resp, name) {
 
-  insert.executeSql('select * from brands where brand = ' + name + ';', function(data, err){
+  var sqlCommand = 'select * from brands where brand = "' + name + '";'
+  console.log(sqlCommand);
+
+  insert.executeSql(sqlCommand, function(data, err){
         if (err) {
              httpMessages.showError(req, resp);
           }
