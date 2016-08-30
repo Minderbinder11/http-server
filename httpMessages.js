@@ -1,5 +1,6 @@
-var settings = require('./settings');
+'use strict';
 
+var settings = require('./settings');
 
 // Greeting at the entry point to the database
 exports.showRoot = function(req, resp){
@@ -13,6 +14,7 @@ exports.showRoot = function(req, resp){
                       <body>Welcome to my Kite Database Homepage:<br>
                             Here are some places you can go to work with the database: <br>
                             /kites - GET - gets a list of all of the data in the site
+                            /kites - POST - puts a new record into the databaseS
                       </body>
                   </html>`);
   } else {
@@ -24,7 +26,6 @@ exports.showRoot = function(req, resp){
 };
 
 // This file is the list of messages that are sent to the client side
-
 exports.showError = function (req, resp) {
     if (settings.httpMsgsFormat === "HTML") {
         resp.writeHead(200, { "Content-Type": "text/html" });
@@ -50,7 +51,6 @@ exports.sendJson = function (req, resp, data) {
     if(data) {
      resp.write(JSON.stringify(data));
     }
-
     resp.end();
 };
 
@@ -66,8 +66,8 @@ exports.show404 = function (req, resp) {
                       <body> 404 Resource Not Found </body>
                     </html>`);
     } else {
-        resp.writeHead(405, "Method not supported", { "Content-Type": "application/json" });
-        resp.write(JSON.stringify({ data: "Method not supported." }));
+        resp.writeHead(404, "Resource Not Found", { "Content-Type": "application/json" });
+        resp.write(JSON.stringify({ data: "Resource Not Found." }));
     }
 
     resp.end();
@@ -86,6 +86,24 @@ exports.show405 = function (req, resp) {
     } else {
         resp.writeHead(405, "Method not supported", { "Content-Type": "application/json" });
         resp.write(JSON.stringify({ data: "Method not supported." }));
+    }
+
+    resp.end();
+};
+
+// This in the case that a request gets sent to the server that is not currently supported, and I need to call an error on it.
+exports.show413 = function (req, resp) {
+    if (settings.httpMsgsFormat === "HTML") {
+        resp.writeHead(413, "Request Too Large" , { "Content-Type": "text/html" });
+        resp.write(`<html>
+                      <head>
+                        <title> 413 Resource Too Large </title>
+                        </head>
+                      <body> 413 You have exceeded the size limit for data upload</body>
+                    </html>`);
+    } else {
+        resp.writeHead(413, "Request Too Large", { "Content-Type": "application/json" });
+        resp.write(JSON.stringify({ data: "413 Too Much Data" }));
     }
 
     resp.end();
