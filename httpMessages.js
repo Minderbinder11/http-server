@@ -1,6 +1,7 @@
 'use strict';
 
 var settings = require('./settings');
+var apiYelp = require('./apiOpenYelp');
 
 // Greeting at the entry point to the database
 exports.showRoot = function(req, resp){
@@ -45,14 +46,33 @@ exports.showError = function (req, resp) {
 
 // sends the data requested via JSON
 
-exports.sendJson = function (req, resp, data) {
-    resp.writeHead(200, { "Content-Type": "application/json" });
+  exports.sendJson = function (req, resp, data) {
 
-    if(data) {
-     resp.write(JSON.stringify(data));
-    }
-    resp.end();
-};
+    //var payload = '';
+    //payload = JSON.stringify(data);
+    resp.writeHead(200, "Valid EndPoints", { "Content-Type": "application/json" });
+    console.log('payload ' + data);
+    resp.write(JSON.stringify(data));
+        resp.end();
+/*
+    var payload = '';
+
+    resp.on('data', function(data){
+        payload += data;
+      });
+
+    resp.on('end', function(){
+        resp.write(JSON.stringify(payload));
+      });
+
+      resp.end();
+
+      */
+  };
+
+
+
+
 
 
 // This in the case that a request gets sent to the server that is not currently supported, and I need to call an error on it.

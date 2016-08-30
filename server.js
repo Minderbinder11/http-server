@@ -1,16 +1,43 @@
-'use strict';
+//'use strict';
 
 var http = require('http');
 var settings = require('./settings');
 var kiteboard = require('./kiteboard');
 var httpMessages = require('./httpMessages');
 var URL = require('url-parse');
+var yelp = require('./apiOpenYelp');
+var request = require('request');
 
 http.createServer(function(req, resp){
 
   switch(req.method){
 
     case 'GET':
+          if (req.url === '/yelp'){
+
+            var reqBody = '';
+
+            var urlYelp =   yelp({ term: 'food', location: 'Montreal', limit: 3 }, function (error, resp, data){
+              if (error){
+                httpMessages.showError(req, resp, error);
+              }
+            });
+            request.get(urlYelp)
+            .on('error', function(err){console.error(err);})
+            .on('data', function(data){
+                reqBody += data;
+                console.log('on data'); //
+                  if (reqBody.length > 1e7) { //10MB
+                      httpMessages.show413(req, resp);
+                    }
+                  })
+              .on('end', function(){
+                console.log('in switch on server ' + reqBody );
+                kiteboard.showYelp(req, resp, reqBody);
+            });
+
+          }
+
           if (req.url === '/'){
             httpMessages.showRoot(req, resp);
           } else if (req.url === "/kites") {
@@ -27,7 +54,6 @@ http.createServer(function(req, resp){
               } else {
                   httpMessages.show404(req, resp);
               }
-            //  httpMessages.show405(req, resp);
             }
       break;
 
@@ -43,7 +69,6 @@ http.createServer(function(req, resp){
             }
         });
 
-
         req.on('end', function () {
             kiteboard.add(req, resp, reqBody);
         });
@@ -53,6 +78,24 @@ http.createServer(function(req, resp){
       }
       break;
 
+    case 'DELETE':
+      if(req.url === '/kites'){
+        let reqBody = '';
+
+        req.on('data', function (data) {
+            reqBody += data;
+            if (reqBody.length > 1e7) { //10MB
+                httpMessages.show413(req, resp);
+            }
+        });
+
+        req.on('end', function () {
+            kiteboard.delete(req, resp, reqBody);
+        });
+      } else {
+        httpMessages.show404(req, resp);
+      }
+      break;
     default:
       console.log('bottom one');
       httpMessages.show405(req, resp);
