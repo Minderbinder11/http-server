@@ -10,9 +10,9 @@ exports.showYelp = function (req, resp, reqBody){
   try {
 
     if (!reqBody) throw new Error("Input not valid");
-    //var data = JSON.parse(reqBody);
+    var data = JSON.parse(reqBody);
 
-    console.log('kiteboard' + reqBody);
+    console.log('kiteboard' + data);
 
     httpMessages.sendJson(req, resp, reqBody);
   }

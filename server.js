@@ -6,7 +6,7 @@ var kiteboard = require('./kiteboard');
 var httpMessages = require('./httpMessages');
 var URL = require('url-parse');
 var yelp = require('./apiOpenYelp');
-var request = require('request');
+var request = require('request-promise');
 
 http.createServer(function(req, resp){
 
@@ -23,30 +23,42 @@ http.createServer(function(req, resp){
               }
             });
 
-            request.get(urlYelp, function (err, res, body){
-                if (err){
-                  httpMessages.showError(req, resp, error);
-                }else{
-                  kiteboard.showYelp(req, response, body);
-                  console.log(body);
-                }
+            request(urlYelp).then(function (htmlString) {
+                  console.log(new Date() + ' : ' + 'on finish');
+                  kiteboard.showYelp(req, res, htmlString);
+              })
+              .catch(function (err) {
+                httpMessages.showError(req, res, err);
               });
-
-            });
-            .on('error', function(err){console.error(err);})
-            .on('data', function(data){
-                reqBody += data;
-                console.log('on data'); //
-                  if (reqBody.length > 1e7) { //10MB
-                      httpMessages.show413(req, resp);
-                    }
-                  })
-              .on('end', function(){
-                console.log('in switch on server ' + reqBody );
-                kiteboard.showYelp(req, resp, reqBody);
-            });
-
           }
+
+/*
+            , function (err, res, body){
+                if (err){
+                  httpMessages.showError(req, res, err);
+                }
+                console.log('server switch ' + body);
+                })
+                .on('finish', function(data){
+                console.log(new Date() + ' : ' + 'on finish');
+                kiteboard.showYelp(req, res, body);
+              });
+            }
+          ///  });
+          //  .on('error', function(err){console.error(err);})
+        //    .on('data', function(data){
+        //        reqBody += data;
+        //        console.log('on data'); //
+        //          if (reqBody.length > 1e7) { //10MB
+        //              httpMessages.show413(req, resp);
+        //            }
+        //          })
+        //      .on('end', function(){
+        //        console.log('in switch on server ' + reqBody );
+        //        kiteboard.showYelp(req, resp, reqBody);
+        //    });
+
+*/
 
           if (req.url === '/'){
             httpMessages.showRoot(req, resp);
