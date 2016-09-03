@@ -45,29 +45,12 @@ exports.showError = function (req, resp) {
 };
 
 // sends the data requested via JSON
+exports.sendJson = function (req, resp, data) {
 
-  exports.sendJson = function (req, resp, data) {
-
-    //var payload = '';
-    //payload = JSON.stringify(data);
     resp.writeHead(200, "Valid EndPoints", { "Content-Type": "application/json" });
-    console.log('payload ' + data);
+    console.log('(10) In the httpMessages');
     resp.write(JSON.stringify(data));
-        resp.end();
-/*
-    var payload = '';
-
-    resp.on('data', function(data){
-        payload += data;
-      });
-
-    resp.on('end', function(){
-        resp.write(JSON.stringify(payload));
-      });
-
-      resp.end();
-
-      */
+    resp.end();
   };
 
 

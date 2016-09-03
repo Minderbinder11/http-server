@@ -6,7 +6,7 @@ var kiteboard = require('./kiteboard');
 var httpMessages = require('./httpMessages');
 var URL = require('url-parse');
 var yelp = require('./apiOpenYelp');
-var request = require('request-promise');
+var request = require('request');
 
 http.createServer(function(req, resp){
 
@@ -15,57 +15,33 @@ http.createServer(function(req, resp){
     case 'GET':
           if (req.url === '/yelp'){
 
-            var reqBody = '';
+            console.log('(1) : before call to get Yelp URL');
 
-            var urlYelp =   yelp({ term: 'food', location: 'Montreal', limit: 3 }, function (error, resp, data){
-              if (error){
-                httpMessages.showError(req, resp, error);
+            var urlYelp = yelp({location: 'San+Francisco', limit: '2' , category_filter: 'pizza'},  function(err, data){
+              if (!err){
+                  console.log('(2) : ' + data);
               }
             });
 
-            request(urlYelp).then(function (htmlString) {
-                  console.log(new Date() + ' : ' + 'on finish');
-                  kiteboard.showYelp(req, res, htmlString);
-              })
-              .catch(function (err) {
-                httpMessages.showError(req, res, err);
-              });
-          }
+            console.log('(2) : after call to get Yelp URL. URL is : ' + urlYelp);
 
-/*
-            , function (err, res, body){
-                if (err){
-                  httpMessages.showError(req, res, err);
+            request(urlYelp, function (error, response, htmlString) {
+                if (!error && response.statusCode == 200) {
+
+                console.log('(3) return from Yelp ' + htmlString); // Show the HTML for the Modulus homepage.
+                resp.writeHead(200, "Valid EndPoints", { "Content-Type": "application/json" });
+                resp.write(htmlString);
+                resp.end();
                 }
-                console.log('server switch ' + body);
-                })
-                .on('finish', function(data){
-                console.log(new Date() + ' : ' + 'on finish');
-                kiteboard.showYelp(req, res, body);
               });
-            }
-          ///  });
-          //  .on('error', function(err){console.error(err);})
-        //    .on('data', function(data){
-        //        reqBody += data;
-        //        console.log('on data'); //
-        //          if (reqBody.length > 1e7) { //10MB
-        //              httpMessages.show413(req, resp);
-        //            }
-        //          })
-        //      .on('end', function(){
-        //        console.log('in switch on server ' + reqBody );
-        //        kiteboard.showYelp(req, resp, reqBody);
-        //    });
 
-*/
-
-          if (req.url === '/'){
+              console.log('(4) After call to Yelp');
+          }else if (req.url === '/'){
             httpMessages.showRoot(req, resp);
           } else if (req.url === "/kites") {
             kiteboard.getList(req, resp);
           } else {
-            let patt2 = /^[a-z0-9\/]+$/;
+            var patt2 = /^[a-z0-9\/]+$/;
 
             if (!req.url.search(patt2)) {
                 var split = req.url.split('/');
@@ -82,7 +58,7 @@ http.createServer(function(req, resp){
     case 'POST':
 
       if(req.url === '/kites'){
-        let reqBody = '';
+        var reqBody = '';
 
         req.on('data', function (data) {
             reqBody += data;
@@ -102,7 +78,7 @@ http.createServer(function(req, resp){
 
     case 'DELETE':
       if(req.url === '/kites'){
-        let reqBody = '';
+        var reqBody = '';
 
         req.on('data', function (data) {
             reqBody += data;

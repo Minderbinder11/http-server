@@ -5,6 +5,8 @@
   "main": "select.js",
   "dependencies": {
     "browser-request": "^0.3.3",
+    "dotenv": "^2.0.0",
+    "envs": "^0.1.6",
     "json-stringify": "^1.0.0",
     "lodash": "^4.15.0",
     "mysql": "^2.11.1",

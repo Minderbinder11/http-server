@@ -13,8 +13,8 @@ exports.executeSql = function(sql, callback){
         callback(null, err);
         return;
       } else{
-        console.log('connected as id ' + connection.threadId);
-        console.log(data);
+        console.log('(20) connected as id  inside the executeSql function ' + connection.threadId);
+        console.log('(21) data from the execute sql function' + data);
         callback(data);
       }
     });

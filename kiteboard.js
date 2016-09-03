@@ -5,14 +5,13 @@ var httpMessages = require('./httpMessages');
 var util = require('util');
 
 // this is the same as the employee.js file from the example
-
 exports.showYelp = function (req, resp, reqBody){
   try {
 
     if (!reqBody) throw new Error("Input not valid");
     var data = JSON.parse(reqBody);
 
-    console.log('kiteboard' + data);
+    console.log('kiteboard' + reqBody);
 
     httpMessages.sendJson(req, resp, reqBody);
   }
